@@ -1,0 +1,49 @@
+### Pronto Soccorso Liguria
+
+# Introduzione
+
+Questo programma estrapola le informazioni dal sito del 118 ligure, le 
+  trasforma, e crea una mappa della situazione attuale.
+
+E' stato creato in quanto il sito dove vengono presi i dati, oltre a non 
+  seguire gli standard e ad essere spesso non disponibile, non permette 
+  di avere una visione grafica di insieme e una interpretazione accurata 
+  dei dati. Un utente che utilizza questa interfaccia con un 
+  aggiornamento delle informazioni nell'ordine di qualche minuto, richiede 
+  un carico al server principale nettamente minore. Di conseguenza 
+  consiglio a chiunque dovesse accedere ai dati permettendosi un breve 
+  ritardo di usare questo programma, così da non sovraccaricare il 
+  server principale.
+
+# Cosa necessita per funzionare
+
+Per funzionare correttamente richiede di:
+ - Python 2.7 superiore (Python 3.x incluso)
+     Le versioni inferiori alla 2.7 non funzionano in quanto la libreria 
+       che si occupa del parsing HTML non riesce correttamente a gestire i 
+       numerosi problemi presenti sulle pagini che forniscono i dati 
+       iniziali (legati alla non osservazione dello standard XHTML).
+     Il programma è stato testato con successo sotto Python 3.3 e Python 
+       2.7 su piattaforma GNU/Linux.
+ - Una chiave per le API di Bing Maps valida
+     La chiave è necessaria in quanto il programma utilizza Bing Maps 
+       per determinare la posizione della chiamata sulla mappa. E' stato 
+       scelto questo servizio in quanto s'è rivelato particolarmente 
+       preciso in fase di testing, soprattutto per quanto riguarda la 
+       localizzazione dei quartieri delle città.
+
+Il programma non è un demone: per aggiornare i propri dati necessita di 
+  essere nuovamente eseguito. Si consiglia di conseguenza di utilizzare 
+  crontab (o equivalenti) per offrire infomazioni sempre aggiornate.
+  Si consiglia caldamente di non eseguire troppe volte in un tempo 
+  ristretto il programma per evitare di pesare troppo sul servizio 
+  preesistente.
+
+# Licenza e crediti
+
+Questo programma è sviluppato da Francesco Frassinelli 
+(http://frafra.eu) ed è stato rilasciato sotto licenza AGPLv3.
+
+# Link
+
+Demo: http://prontosoccorso.frafra.eu
