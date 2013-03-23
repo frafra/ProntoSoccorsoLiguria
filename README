@@ -32,12 +32,43 @@ Per funzionare correttamente richiede di:
        preciso in fase di testing, soprattutto per quanto riguarda la 
        localizzazione dei quartieri delle città.
 
-Il programma non è un demone: per aggiornare i propri dati necessita di 
-  essere nuovamente eseguito. Si consiglia di conseguenza di utilizzare 
-  crontab (o equivalenti) per offrire infomazioni sempre aggiornate.
-  Si consiglia caldamente di non eseguire troppe volte in un tempo 
-  ristretto il programma per evitare di pesare troppo sul servizio 
-  preesistente.
+# FAQ
+
+Q: Perché il programma utilizza Bing Maps?
+A: Perché nei test si è rivelato il migliore per individuare le 
+     posizioni dei quartieri. Mi piacerebbe in futuro supportare anche 
+     Nominatim, ma attualmente non è adatto per svolgere questo compito.
+
+Q: Perché le informazioni non mi si aggiornano?
+A: Perché devi avviare nuovamente il programma: non è un demone.
+
+Q: Perché il programma usa Leaflet e non OpenLayers?
+A: Perché con poco codice riesco ad avere un buon risultato grafico.
+
+Q: Ho provato ad utilizzare un altro sistema per la risoluzione degli 
+     indirizzi, ma il programma continua a non mostrare il dato 
+     aggiornato: come mai?
+A: Per limitare le interrogazione al server delle mappe ho implementato 
+      un sistema di caching. Rimuovi cache.txt
+
+Q: geojson.js non è un file Geojson valido!
+A: Ho aggiunto "data = " all'inizio per poterlo importare come un file 
+     javascript qualsiasi.
+
+Q: Se rimuovo "data = " e lo importo in un altro programma, i punti 
+     vengono posizionati in maniera sbagliata!
+A: Leaflet inverte la latitudine con la longitudine.
+
+# Tecnologie utilizzate
+
+Questo programma si avvale di:
+  - Python (http://python.org)
+  - HTML5
+  - CSS
+  - Javascript
+  - Leaflet (http://leafletjs.com/)
+  - Geojson
+  - Bing Maps
 
 # Licenza e crediti
 
