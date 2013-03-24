@@ -128,21 +128,7 @@ class ProntoSoccorsoParser(HTMLParser):
             self.table += 1
         elif self.table == 2 and tag == "tr":
             if self.tr >= 2: # Più sicuro che aspettare </tr>
-                if "Indirizzo" in self.row.keys():
-                    indirizzo = self.row["Indirizzo"]
-                else:
-                    indirizzo = ""
-                place, (lat, lng) = getAddress({
-                    "adminDistrict2":STAZIONI[self.district],
-                    "addressLine":indirizzo,
-                    "locality":self.row["Località"],
-                })
-                self.row["Posizione completa"] = place
-                self.row["Latitudine"] = lat
-                self.row["Longitudine"] = lng
-                self.info.append(self.row)
-                self.row = {}
-                self.td = 0
+                self.flush()
             self.tr += 1
         elif self.tr >= 2 and tag == "td":
             self.td += 1
@@ -157,6 +143,8 @@ class ProntoSoccorsoParser(HTMLParser):
             self.row[COLONNE[3]] = BANDIERE[image]
     def handle_endtag(self, tag):
         if tag == "table":
+            if self.table == 2 and self.row:
+                self.flush()
             self.table -= 1
     def handle_data(self, data):
         if self.table == 2 and self.tr >= 2:
@@ -168,6 +156,22 @@ class ProntoSoccorsoParser(HTMLParser):
                         self.row["Luogo"] = LUOGHI[code[0]]
                     self.row["Patologia"] = PATOLOGIE[code[-4:-1]]
                     self.row["Codice supposto"] = code[-1]
+    def flush(self):
+        if "Indirizzo" in self.row.keys():
+            indirizzo = self.row["Indirizzo"]
+        else:
+            indirizzo = ""
+        place, (lat, lng) = getAddress({
+            "adminDistrict2":STAZIONI[self.district],
+            "addressLine":indirizzo,
+            "locality":self.row["Località"],
+        })
+        self.row["Posizione completa"] = place
+        self.row["Latitudine"] = lat
+        self.row["Longitudine"] = lng
+        self.info.append(self.row)
+        self.row = {}
+        self.td = 0
 
 def clean(html):
     return html.replace("<style=", "<div style=")
