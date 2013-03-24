@@ -81,7 +81,7 @@ A: Se il programma resituisce errori vuol dire che:
      - E' stato terminato dall'utente
      - La cache è corrotta
          Questo può accadere dopo un aggiornamento. Eliminare il file di
-         caching (solitamente chiamato "cache.txt")
+         caching (solitamente chiamato "geojson.js")
      - L'indirizzo non è stato trovato; l'evento sarà ignorato
      - Si tratta di un BUG (per favore, segnalamelo)
 

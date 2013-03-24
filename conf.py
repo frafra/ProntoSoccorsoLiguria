@@ -6,5 +6,5 @@ APIKEY = "" # !!! Insert here your API
 # File output
 OUTPUT = "geojson.js"
 
-# Cache
-CACHE = "cache.txt"
+# Javascript variable for Geojson
+PREFIX = "data = "

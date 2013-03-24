@@ -26,10 +26,8 @@ else:
     print(" - 3.3 (e superiori)")
     sys.exit(1)
 
-import collections
 import json
 import os
-import shelve
 import socket
 import time
 
@@ -93,26 +91,35 @@ PATOLOGIE = {
     "C20":"patologia non identificata",
 }
 
-CACHED = 256
-
 BING = "http://dev.virtualearth.net/REST/v1/Locations?"
 
-def getAddress(place):
-    place.update({
-        "key":conf.APIKEY,
-        "countryRegion":"Italy",
-        "adminDistrict":"Lig.",
-        "maxResults":1,
-    })
-    request = BING + urlencode(place)
-    if request in cache.keys():
-        address, coordinates = cache[request]
+def cacheCheck(request):
+    if cache:
+        for feature in cache["features"]:
+            if feature["properties"]["request"] == request:
+                return feature
+    return False
+
+def getAddress(details):
+    details.extend([
+        ["countryRegion", "Italy"],
+        ["adminDistrict", "Lig."],
+        ["maxResults", 1],
+    ])
+    place = dict(details)
+    place["key"] = conf.APIKEY
+    authorized = BING + urlencode(place)
+    request = "|".join([str(v) for k, v in details])
+    feature = cacheCheck(request)
+    if feature:
+        address = feature["properties"]["address"]
+        coordinates = map(float, feature["geometry"]["coordinates"])
     else:
-        response = urlopen(request).read().decode("utf-8")
+        response = urlopen(authorized).read().decode("utf-8")
         result = json.loads(response)
         partial = result["resourceSets"][0]
         if partial["estimatedTotal"] == 0:
-            if "addressLine" in place.keys():
+            if "addressLine" not in place.keys():
                 del place["addressLine"]
                 return getAddress(place)
             print("[!] Indirizzo non trovato")
@@ -123,8 +130,7 @@ def getAddress(place):
         resource = partial["resources"][0]
         address = resource["address"]["formattedAddress"]
         coordinates = resource["geocodePoints"][0]["coordinates"]
-        cache[request] = [address, coordinates]
-    return address, coordinates
+    return request, address, coordinates
 
 class ProntoSoccorsoParser(HTMLParser):
     def __init__(self, district, *args, **kwargs):
@@ -173,12 +179,13 @@ class ProntoSoccorsoParser(HTMLParser):
             indirizzo = self.row["Indirizzo"]
         else:
             indirizzo = ""
-        place, coordinates = getAddress({
-            "adminDistrict2":STAZIONI[self.district],
-            "addressLine":indirizzo,
-            "locality":self.row["Località"],
-        })
-        if place:
+        request, place, coordinates = getAddress([
+            ["adminDistrict2", STAZIONI[self.district]],
+            ["addressLine", indirizzo],
+            ["locality", self.row["Località"]],
+        ])
+        self.row["Request"] = request
+        if place and coordinates:
             lat, lng = coordinates
             self.row["Posizione completa"] = place
             self.row["Latitudine"] = lat
@@ -228,6 +235,8 @@ def properties(data):
     return {
         "icon":data["Bandiera"],
         "title":"<br />".join(descrizione) % data,
+        "request":data["Request"],
+        "address":data["Posizione completa"],
     }
 
 def features(info):
@@ -242,20 +251,17 @@ def features(info):
                 })
     return tmp
 
-def main():
+if __name__ == "__main__":
+    if os.path.isfile(conf.OUTPUT):
+        with open(conf.OUTPUT, "r") as textfile:
+            cache = json.loads(textfile.read().lstrip(conf.PREFIX))
+    else:
+        cache = {}
     info = getAll()
     geojson = {
         "type":"FeatureCollection",
         "features":features(info),
     }
     with open(conf.OUTPUT, "w") as textfile:
-        textfile.write("data = "+json.dumps(geojson))
-    return info
-
-if __name__ == "__main__":
-    cache = shelve.open(conf.CACHE)
-    if len(cache) > CACHED:
-        for key in cache.keys():
-            del cache[key]
-    main()
-    cache.close()
+        textfile.write(conf.PREFIX)
+        textfile.write(json.dumps(geojson))
