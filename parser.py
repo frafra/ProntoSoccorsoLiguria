@@ -106,13 +106,19 @@ def getAddress(place):
     })
     request = BING + urlencode(place)
     if request in cache.keys():
-        result = cache[request]
+        address, coordinates = cache[request]
     else:
         response = urlopen(request).read().decode("utf-8")
-        result = json.loads(response)["resourceSets"][0]["resources"][0]
-        cache[request] = result
-    return (result["address"]["formattedAddress"],
-        result["geocodePoints"][0]["coordinates"])
+        result = json.loads(response)
+        partial = result["resourceSets"][0]
+        if partial["estimatedTotal"] == 0:
+            cache[request] = [None, None]
+            return [None, None]
+        resource = partial["resources"][0]
+        address = resource["address"]["formattedAddress"]
+        coordinates = resource["geocodePoints"][0]["coordinates"]
+        cache[request] = [address, coordinates]
+    return address, coordinates
 
 class ProntoSoccorsoParser(HTMLParser):
     def __init__(self, district, *args, **kwargs):
@@ -161,14 +167,16 @@ class ProntoSoccorsoParser(HTMLParser):
             indirizzo = self.row["Indirizzo"]
         else:
             indirizzo = ""
-        place, (lat, lng) = getAddress({
+        place, coordinates = getAddress({
             "adminDistrict2":STAZIONI[self.district],
             "addressLine":indirizzo,
             "locality":self.row["Località"],
         })
-        self.row["Posizione completa"] = place
-        self.row["Latitudine"] = lat
-        self.row["Longitudine"] = lng
+        if place:
+            lat, lng = coordinates
+            self.row["Posizione completa"] = place
+            self.row["Latitudine"] = lat
+            self.row["Longitudine"] = lng
         self.info.append(self.row)
         self.row = {}
         self.td = 0
