@@ -112,6 +112,12 @@ def getAddress(place):
         result = json.loads(response)
         partial = result["resourceSets"][0]
         if partial["estimatedTotal"] == 0:
+            if "addressLine" in place.keys():
+                del place["addressLine"]
+                return getAddress(place)
+            print("[!] Indirizzo non trovato")
+            print(place)
+            print(request)
             cache[request] = [None, None]
             return [None, None]
         resource = partial["resources"][0]
