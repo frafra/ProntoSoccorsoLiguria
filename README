@@ -59,6 +59,28 @@ Q: Se rimuovo "data = " e lo importo in un altro programma, i punti
      vengono posizionati in maniera sbagliata!
 A: Leaflet inverte la latitudine con la longitudine.
 
+Q: Il programma quando viene avviato non scrive niente sul terminale!
+A: Quando le operazioni procedono come previsto, non viene stampato output.
+
+Q: Il programma non stampa output eppure non aggiorna le informazioni!
+A: Dato che il server principale molto spesso non funziona, in caso di 
+     timeout o di errore interno del server, il programma si chiude 
+     senza dare output, ma il codice di uscita è 1 anziché 0.
+
+Q: Come posso capire se il programma è terminato in maniera anomala? A: 
+A: Per avere un output in caso di errore si può avviare il programma da 
+     terminale in questa maniera:
+
+        python parser.py
+        if [ $? != 0 ]; then
+            echo "Il programma non ha avuto successo"
+        fi
+
+Q: Perché il programma mi mostra un errore?
+A: Se il programma resituisce errori vuol dire che:
+     - E' stato terminato dall'utente
+     - Si tratta di un BUG (per favore, segnalamelo)
+
 # Tecnologie utilizzate
 
 Questo programma si avvale di:
