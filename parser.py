@@ -119,14 +119,15 @@ def getAddress(details):
         result = json.loads(response)
         partial = result["resourceSets"][0]
         if partial["estimatedTotal"] == 0:
-            if "addressLine" not in place.keys():
-                del place["addressLine"]
-                return getAddress(place)
+            if "addressLine" in place.keys():
+                for index, (key, value) in enumerate(details):
+                    if key == "addressLine":
+                        del details[index]
+                return getAddress(details)
             print("[!] Indirizzo non trovato")
             print(place)
             print(request)
-            cache[request] = [None, None]
-            return [None, None]
+            sys.exit(1)
         resource = partial["resources"][0]
         address = resource["address"]["formattedAddress"]
         coordinates = resource["geocodePoints"][0]["coordinates"]
