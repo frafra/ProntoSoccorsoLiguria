@@ -81,6 +81,10 @@ A: Se il programma resituisce errori vuol dire che:
      - L'indirizzo non è stato trovato; l'evento sarà ignorato
      - Si tratta di un BUG (per favore, segnalamelo)
 
+Q: Perché non riesco ad aprire l'interfaccia in locale?
+A: Perché il software richiede Leaflet da internet ed effettua delle 
+    chiamate AJAX per aggiornare la mappa.
+
 # Tecnologie utilizzate
 
 Questo programma si avvale di:
