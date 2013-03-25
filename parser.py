@@ -54,11 +54,11 @@ COLONNE = (
     "ASL di destinazione",
 )
 BANDIERE = {
-    "flgnc_24.gif":None,
-    "flag-white-24x24.png":"bianco",
-    "flag-green-24x24.png":"verde",
-    "flag-yellow-24x24.png":"giallo",
-    "flag-red-24x24.png":"rosso",
+    "flgnc_24.gif":["blue", "phone"],
+    "flag-white-24x24.png":["purple", "ambulance"],
+    "flag-green-24x24.png":["green", "ambulance"],
+    "flag-yellow-24x24.png":["orange", "ambulance"],
+    "flag-red-24x24.png":["red", "ambulance"],
 }
 
 # http://www.118er.it/parma/internet/documenti/Valori%20NSIS%20per%20operatori%20del%20soccorso.pdf
@@ -154,12 +154,7 @@ class ProntoSoccorsoParser(HTMLParser):
         elif self.tr >= 2 and self.td == 4 and tag == "img":
             path = dict(attrs)["src"]
             image = path.split("/")[-1]
-            if image == "flgnc_24.gif": # Ugly flag
-                flag = "../img/flag-blue-24x24.png" # To be changed
-            else:
-                flag = "../img/"+image
-            self.row["Bandiera"] = "http://80.16.223.45/src/"+flag
-            self.row[COLONNE[3]] = BANDIERE[image]
+            self.row["Colore"], self.row["Icona"] = BANDIERE[image]
     def handle_endtag(self, tag):
         if tag == "table":
             if self.table == 2 and self.row:
@@ -234,7 +229,8 @@ def properties(data):
     if "Patologia" in data.keys():
         descrizione.insert(1, "Patologia: %(Patologia)s")
     return {
-        "icon":data["Bandiera"],
+        "icon":data["Icona"],
+        "color":data["Colore"],
         "title":"<br />".join(descrizione) % data,
         "request":data["Request"],
         "address":data["Posizione completa"],
