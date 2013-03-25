@@ -4,7 +4,5 @@
 APIKEY = "" # !!! Insert here your API
 
 # File output
-OUTPUT = "geojson.js"
+OUTPUT = "geo.json"
 
-# Javascript variable for Geojson
-PREFIX = "data = "

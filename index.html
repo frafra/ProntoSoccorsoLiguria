@@ -3,7 +3,6 @@
 <head>
     <title>Pronto soccorso Liguria</title>
     <meta charset="utf-8" />
-    <meta http-equiv="refresh" content="300">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
@@ -13,6 +12,7 @@
     <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" />
     <link rel="stylesheet" href="awesome-markers/dist/leaflet.awesome-markers.css" />
     <script src="awesome-markers/dist/leaflet.awesome-markers.min.js"></script>
+    <script src="leaflet-ajax/dist/leaflet.ajax.js"></script>
 </head>
 <body>
 
@@ -24,7 +24,6 @@
 
 <div id="map" style="position: absolute; bottom: 0px; right: 0px; left: 0px; top: 85px;"></div>
 
-<script src="geojson.js" type="text/javascript"></script>
 <script>
     var map = L.map('map').setView([44.193, 8.817], 9);
 
@@ -34,7 +33,7 @@
             attribution: 'Map data © <a href="http://www.openstreetmap.org/">OpenStreetMap</a> contributors — Data source: <a href="http://80.16.223.45/">118 Liguria</a> — Developed by <a href="http://frafra.eu">Francesco Frassinelli</a>'
     }).addTo(map);
 
-    L.geoJson(data, {
+    var geoJsonLayer = new L.geoJson.ajax("geo.json", {
         onEachFeature: function (feature, layer) {
             layer.bindPopup(feature.properties.title);
         },
@@ -45,7 +44,12 @@
             })
             return L.marker(latlng, {icon:myicon});
         }
-    }).addTo(map);
+    });
+    geoJsonLayer.addTo(map);
+    
+    setInterval(function() {
+        geoJsonLayer.refresh();
+    }, 300000);
 </script>
 
 </body>

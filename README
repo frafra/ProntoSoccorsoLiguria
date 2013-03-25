@@ -49,14 +49,10 @@ Q: Ho provato ad utilizzare un altro sistema per la risoluzione degli
      indirizzi, ma il programma continua a non mostrare il dato 
      aggiornato: come mai?
 A: Per limitare le interrogazione al server delle mappe ho implementato 
-      un sistema di caching. Rimuovi cache.txt
+      un sistema di caching. Rimuovi geo.json.
 
-Q: geojson.js non è un file Geojson valido!
-A: Ho aggiunto "data = " all'inizio per poterlo importare come un file 
-     javascript qualsiasi.
-
-Q: Se rimuovo "data = " e lo importo in un altro programma, i punti 
-     vengono posizionati in maniera sbagliata!
+Q: Se importo file json in un altro programma, i punti vengono 
+      posizionati in maniera sbagliata!
 A: Leaflet inverte la latitudine con la longitudine.
 
 Q: Il programma quando viene avviato non scrive niente sul terminale!
@@ -81,7 +77,7 @@ A: Se il programma resituisce errori vuol dire che:
      - E' stato terminato dall'utente
      - La cache è corrotta
          Questo può accadere dopo un aggiornamento. Eliminare il file di
-         caching (solitamente chiamato "geojson.js")
+         caching (solitamente chiamato "geo.json")
      - L'indirizzo non è stato trovato; l'evento sarà ignorato
      - Si tratta di un BUG (per favore, segnalamelo)
 
@@ -93,6 +89,9 @@ Questo programma si avvale di:
   - CSS
   - Javascript
   - Leaflet (http://leafletjs.com/)
+  - leaflet-ajax
+  - leaflet.awesome-markers
+  - font-awesome
   - Geojson
   - Bing Maps
 

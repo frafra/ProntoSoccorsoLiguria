@@ -251,7 +251,7 @@ def features(info):
 if __name__ == "__main__":
     if os.path.isfile(conf.OUTPUT):
         with open(conf.OUTPUT, "r") as textfile:
-            cache = json.loads(textfile.read().lstrip(conf.PREFIX))
+            cache = json.loads(textfile.read())
     else:
         cache = {}
     info = getAll()
@@ -260,5 +260,4 @@ if __name__ == "__main__":
         "features":features(info),
     }
     with open(conf.OUTPUT, "w") as textfile:
-        textfile.write(conf.PREFIX)
         textfile.write(json.dumps(geojson))
