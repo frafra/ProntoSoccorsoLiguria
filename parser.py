@@ -166,13 +166,15 @@ class ProntoSoccorsoParser(HTMLParser):
                 code = data.strip()
                 self.row[COLONNE[self.td-1]] = code
                 if self.td == 7:
-                    fields = code.split("C")
+                    if code == "-":
+                        return
+                    self.row["Codice supposto"] = code[-1]
+                    fields = code[:-1].split("C")
                     if len(fields[0]) == 1:
                         self.row["Luogo"] = LUOGHI[fields[0]]
-                    if len(fields[1]) >= 2:
-                        self.row["Patologia"] = PATOLOGIE["C"+fields[1][:2]]
-                    if len(fields[1]) == 3:
-                        self.row["Codice supposto"] = fields[1][-1]
+                    if len(fields) == 2:
+                        if len(fields[1]) == 2:
+                            self.row["Patologia"] = PATOLOGIE["C"+fields[1][:2]]
     def flush(self):
         if "Indirizzo" in self.row.keys():
             indirizzo = self.row["Indirizzo"]
